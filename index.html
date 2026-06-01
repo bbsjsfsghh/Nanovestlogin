@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nanovest Splash Screen</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    height:100vh;
+    overflow:hidden;
+    background:linear-gradient(180deg,#e8dcff,#f3ecff);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    position:relative;
+}
+
+/* Background Bubble */
+.circle{
+    position:absolute;
+    border-radius:50%;
+    filter:blur(2px);
+}
+
+.c1{
+    width:320px;
+    height:320px;
+    background:#7c4dff30;
+    top:180px;
+    right:-80px;
+}
+
+.c2{
+    width:250px;
+    height:250px;
+    background:#4da3ff30;
+    bottom:280px;
+    left:-100px;
+}
+
+.c3{
+    width:550px;
+    height:550px;
+    background:rgba(255,255,255,.25);
+    border:1px solid rgba(255,255,255,.4);
+    border-radius:45%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+/* Content */
+.container{
+    text-align:center;
+    z-index:2;
+}
+
+.logo{
+    width:180px;
+    height:auto;
+    display:block;
+    margin:0 auto 15px;
+}
+
+.brand{
+    font-size:56px;
+    font-weight:300;
+    color:#311b92;
+}
+
+.brand b{
+    font-weight:700;
+}
+
+.footer{
+    position:absolute;
+    bottom:110px;
+    text-align:center;
+    width:100%;
+}
+
+.footer p{
+    color:#555;
+    font-size:18px;
+    margin-bottom:10px;
+}
+
+.sinar-logo{
+    width:260px;
+    height:auto;
+}
+
+.info{
+    position:absolute;
+    bottom:30px;
+    left:50%;
+    transform:translateX(-50%);
+    background:#fff;
+    padding:15px 25px;
+    border-radius:30px;
+    display:flex;
+    gap:20px;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 5px 20px rgba(0,0,0,.08);
+}
+
+.info img{
+    height:35px;
+    width:auto;
+    object-fit:contain;
+}
+
+/* Mobile */
+@media(max-width:600px){
+
+    .brand{
+        font-size:42px;
+    }
+
+    .logo{
+        width:140px;
+    }
+
+    .c3{
+        width:420px;
+        height:420px;
+    }
+
+    .sinar-logo{
+        width:200px;
+    }
+
+    .info{
+        width:92%;
+        gap:10px;
+        padding:12px;
+        flex-wrap:wrap;
+    }
+
+    .info img{
+        height:28px;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="circle c1"></div>
+<div class="circle c2"></div>
+<div class="circle c3"></div>
+
+<div class="container">
+
+    <!-- Logo Nanovest JPG -->
+    <img
+        src="https://images.glints.com/unsafe/glints-dashboard.oss-ap-southeast-1.aliyuncs.com/company-logo/711e0870b1219671701ec303263e6b8f.png"
+        alt="Nanovest Logo"
+        class="logo"
+    >
+
+    <div class="brand">
+        nano<b>vest</b>
+    </div>
+
+</div>
+
+<div class="footer">
+
+    <p>powered by</p>
+
+    <!-- Logo Sinarmas JPG -->
+    <img
+        src="https://www.nanovest.io/wp-content/uploads/2022/10/AsuransiSinarmas.webp"
+        alt="Sinarmas Financial Services"
+        class="sinar-logo"
+    >
+
+</div>
+
+<div class="info">
+
+    <!-- Logo KOMDIGI -->
+    <img
+        src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/Logo_Kementerian_Komunikasi_dan_Digital_Republik_Indonesia_%282024%29.svg/langid-250px-Logo_Kementerian_Komunikasi_dan_Digital_Republik_Indonesia_%282024%29.svg.png?utm_source=commons.wikimedia.org&utm_campaign=parser&utm_content=thumbnail"
+        alt="KOMDIGI"
+    >
+
+    <!-- Logo ISO -->
+    <img
+        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRs_RcXcByJJiNpquavxKCxrZxjeo_zz5tOvVVK5hGuUw&s=10"
+        alt="ISO 27001"
+    >
+
+    <!-- Logo Asuransi Sinarmas -->
+    <img
+        src="https://www.nanovest.io/wp-content/uploads/2022/10/AsuransiSinarmas.webp"
+        alt="Asuransi Sinarmas"
+    >
+
+    <!-- Logo OJK -->
+    <img
+        src="https://ipol.id/wp-content/uploads/2024/12/logo-ojk.png"
+        alt="OJK"
+    >
+
+</div>
+
+<script>
+setTimeout(() => {
+    window.location.href = "login.html";
+}, 3000);
+</script>
+
+</body>
+</html>
